@@ -14,7 +14,7 @@ namespace Orders.Backend.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAsync()
+        public virtual async Task<IActionResult> GetAsync()
         {
             var action = await _unitOfWork.GetAsync();
             if (action.WasSuccess)
@@ -25,7 +25,7 @@ namespace Orders.Backend.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetAsync(int id)
+        public virtual async Task<IActionResult> GetAsync(int id)
         {
             var action = await _unitOfWork.GetAsync(id);
             if (action.WasSuccess)
@@ -36,7 +36,7 @@ namespace Orders.Backend.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostAsync(T model)
+        public virtual async Task<IActionResult> PostAsync(T model)
         {
             var action = await _unitOfWork.AddAsync(model);
             if (action.WasSuccess)
@@ -48,7 +48,7 @@ namespace Orders.Backend.Controllers
 
 
         [HttpPut]
-        public async Task<IActionResult> PutAsync(T model)
+        public virtual async Task<IActionResult> PutAsync(T model)
         {
             var action = await _unitOfWork.UpdateAsync(model);
             if (action.WasSuccess)
@@ -60,7 +60,7 @@ namespace Orders.Backend.Controllers
 
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteAsync(int id)
+        public virtual async Task<IActionResult> DeleteAsync(int id)
         {
             var action = await _unitOfWork.DeleteAsync(id);
             if (action.WasSuccess)

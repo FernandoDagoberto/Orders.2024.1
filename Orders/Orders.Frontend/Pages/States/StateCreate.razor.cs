@@ -4,23 +4,26 @@ using Orders.Frontend.Repositories;
 using Orders.Frontend.Shared;
 using Orders.Shared.Entities;
 
-namespace Orders.Frontend.Pages.Countries
+namespace Orders.Frontend.Pages.States
 {
-    public partial class CountryCreate
+    public partial class StateCreate
     {
-        private Country country = new();
-        private FormWithName<Country>? countryForm;
+        private State state= new();
+        private FormWithName<State>? stateForm;
+
+        [Parameter] public int CountryId { get; set; }
         [Inject] private IRepository Repository { get; set; }
         [Inject] private SweetAlertService SweetAlertService { get; set; } = null!;
         [Inject] private NavigationManager NavigationManager { get; set; } = null!;
 
         private async Task CreateAsync()
         {
-            var responseHttp = await Repository.PostAsync("/api/countries", country);
+            state.CountryId= CountryId;
+            var responseHttp = await Repository.PostAsync("/api/states", state);
             if (responseHttp.Error)
             {
                 var message = await responseHttp.GetErrorMessageAsync();
-                await SweetAlertService.FireAsync("Error", message,SweetAlertIcon.Error);
+                await SweetAlertService.FireAsync("Error", message, SweetAlertIcon.Error);
                 return;
             }
             Return();
@@ -36,8 +39,10 @@ namespace Orders.Frontend.Pages.Countries
 
         private void Return()
         {
-            countryForm!.FormPostedSuccessfully = true;
-            NavigationManager.NavigateTo("/countries");
+            stateForm!.FormPostedSuccessfully = true;
+            NavigationManager.NavigateTo($"/countries/details/{CountryId}");
         }
+
+
     }
 }

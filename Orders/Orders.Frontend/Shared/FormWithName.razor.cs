@@ -2,22 +2,24 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Components.Routing;
-using Orders.Shared.Entities;
+using Orders.Shared.Interfaces;
 
-namespace Orders.Frontend.Pages.Countries
+namespace Orders.Frontend.Shared
 {
-    public partial class CountryForm
+    public partial class FormWithName<TModel> where TModel : IEntityWithName
     {
         private EditContext editContext = null!;
-         
-        [EditorRequired, Parameter] public Country Country { get; set; } = null!;
+
+        [EditorRequired, Parameter] public TModel Model { get; set; } = default!;
+        [EditorRequired, Parameter] public string Label { get; set; }=null!;
         [EditorRequired, Parameter] public EventCallback OnValidSubmit { get; set; }
         [EditorRequired, Parameter] public EventCallback ReturnAction { get; set; }
         [Inject] public SweetAlertService SweetAlertService { get; set; } = null!;
         public bool FormPostedSuccessfully { get; set; }
+
         protected override void OnInitialized()
         {
-            editContext = new(Country);
+            editContext = new(Model);
         }
 
         private async Task OnBeforeInternalNavigation(LocationChangingContext context)
@@ -42,9 +44,5 @@ namespace Orders.Frontend.Pages.Countries
 
             context.PreventNavigation();
         }
-
-
-
-
     }
 }

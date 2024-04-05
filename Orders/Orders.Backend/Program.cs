@@ -4,22 +4,41 @@ using Orders.Backend.Repositories.Implementations;
 using Orders.Backend.Repositories.Interfaces;
 using Orders.Backend.UnitsOfWork.Implementations;
 using Orders.Backend.UnitsOfWork.Interfaces;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(x=>x.JsonSerializerOptions.ReferenceHandler=ReferenceHandler.IgnoreCycles);
+
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<DataContext>(x=>x.UseSqlServer("name=LocalConnection"));
+builder.Services.AddTransient<SeedDb>();
 builder.Services.AddScoped(typeof(IGenericUnitOfWork<>), typeof(GenericUnitOfWork<>));
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
+builder.Services.AddScoped(typeof(ICountriesRepository), typeof(CountriesRepository));
+builder.Services.AddScoped(typeof(ICountriesUnitOfWork), typeof(CountriesUnitOfWork));
+
+builder.Services.AddScoped(typeof(IStatesRepository), typeof(StatesRepository));
+builder.Services.AddScoped(typeof(IStatesUnitOfWork), typeof(StatesUnitOfWork));
 
 var app = builder.Build();
+SeedDb(app);
+
+void SeedDb(WebApplication app)
+{
+    var scopedFactory=app.Services.GetService<IServiceScopeFactory>();
+    using (var scope=scopedFactory!.CreateScope())
+    {
+        var service = scope.ServiceProvider.GetService<SeedDb>();
+        service!.SeedAsync().Wait();
+    }
+}
 
 app.UseCors(x => x
     .AllowAnyMethod()
