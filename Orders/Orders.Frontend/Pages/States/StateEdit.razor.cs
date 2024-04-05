@@ -5,25 +5,26 @@ using Orders.Frontend.Shared;
 using Orders.Shared.Entities;
 using System.Net;
 
-namespace Orders.Frontend.Pages.Categories
+namespace Orders.Frontend.Pages.States
 {
-    public partial class CategoryEdit
+    public partial class StateEdit
     {
-        private Category? category;
-        private FormWithName<Category>? categoryForm;
+        private State? state;
+        private FormWithName<State>? stateForm;
         [Inject] private IRepository Repository { get; set; }
         [Inject] private SweetAlertService SweetAlertService { get; set; } = null!;
         [Inject] private NavigationManager NavigationManager { get; set; } = null!;
-        [EditorRequired, Parameter] public int Id { get; set; }
+        [Parameter] public int StateId { get; set; }
+        //[EditorRequired, Parameter] public int Id { get; set; }
 
         protected override async Task OnParametersSetAsync()
         {
-            var responseHttp = await Repository.GetAsync<Category>($"/api/categories/{Id}");
+            var responseHttp = await Repository.GetAsync<State>($"/api/states/{StateId}");
             if (responseHttp.Error)
             {
                 if (responseHttp.HttpResponseMessage.StatusCode == HttpStatusCode.NotFound)
                 {
-                    NavigationManager.NavigateTo("/categories");
+                    Return();
                 }
                 else
                 {
@@ -33,17 +34,17 @@ namespace Orders.Frontend.Pages.Categories
             }
             else
             {
-                category = responseHttp.Response;
+                state = responseHttp.Response;
             }
         }
 
-        private async Task EditAsync()
+        private async Task SaveAsync()
         {
-            var responseHttp = await Repository.PutAsync("/api/categories", category);
+            var responseHttp = await Repository.PutAsync("/api/states", state);
             if (responseHttp.Error)
             {
                 var message = await responseHttp.GetErrorMessageAsync();
-                await SweetAlertService.FireAsync("Error", message);
+                await SweetAlertService.FireAsync("Error", message,SweetAlertIcon.Error);
                 return;
             }
 
@@ -60,8 +61,8 @@ namespace Orders.Frontend.Pages.Categories
 
         private void Return()
         {
-            categoryForm!.FormPostedSuccessfully = true;
-            NavigationManager.NavigateTo("/categories");
+            stateForm!.FormPostedSuccessfully = true;
+            NavigationManager.NavigateTo($"/countries/details/{state!.CountryId}");
         }
     }
 }
