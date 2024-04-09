@@ -27,6 +27,9 @@ builder.Services.AddScoped(typeof(ICountriesUnitOfWork), typeof(CountriesUnitOfW
 builder.Services.AddScoped(typeof(IStatesRepository), typeof(StatesRepository));
 builder.Services.AddScoped(typeof(IStatesUnitOfWork), typeof(StatesUnitOfWork));
 
+builder.Services.AddScoped(typeof(ICitiesRepository), typeof(CitiesRepository));
+builder.Services.AddScoped(typeof(ICitiesUnitOfWork), typeof(CitiesUnitOfWork));
+
 var app = builder.Build();
 SeedDb(app);
 

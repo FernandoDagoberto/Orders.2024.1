@@ -2,11 +2,13 @@
 using Orders.Shared.Entities;
 using Orders.Shared.Response;
 
-namespace Orders.Backend.Repositories.Interfaces
+namespace Orders.Backend.UnitsOfWork.Interfaces
 {
-    public interface ICitiesRepository
+    public interface ICitiesUnitOfWork
     {
+       
         Task<ActionResponse<IEnumerable<City>>> GetAsync(PaginationDTO pagination);
         Task<ActionResponse<int>> GetTotalPagesAsync(PaginationDTO pagination);
+
     }
 }
