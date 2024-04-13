@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Orders.Backend.Data;
+using Orders.Backend.UnitsOfWork.Implementations;
 using Orders.Backend.UnitsOfWork.Interfaces;
 using Orders.Shared.DTOs;
 using Orders.Shared.Entities;
@@ -13,7 +14,7 @@ namespace Orders.Backend.Controllers
     {
         private readonly ICountriesUnitOfWork _countriesUnitOfWork;
 
-        public CountriesController(IGenericUnitOfWork<Country> unitOfWork,ICountriesUnitOfWork countriesUnitOfWork) : base(unitOfWork)
+        public CountriesController(IGenericUnitOfWork<Country> unitOfWork, ICountriesUnitOfWork countriesUnitOfWork) : base(unitOfWork)
         {
             _countriesUnitOfWork = countriesUnitOfWork;
         }
@@ -28,7 +29,6 @@ namespace Orders.Backend.Controllers
             }
             return BadRequest();
         }
-
 
         [HttpGet]
         public override async Task<IActionResult> GetAsync(PaginationDTO pagination)
@@ -52,6 +52,15 @@ namespace Orders.Backend.Controllers
             return NotFound(response.Message);
         }
 
-
+        [HttpGet("totalPages")]
+        public override async Task<IActionResult> GetPagesAsync([FromQuery] PaginationDTO pagination)
+        {
+            var action = await _countriesUnitOfWork.GetTotalPagesAsync(pagination);
+            if (action.WasSuccess)
+            {
+                return Ok(action.Result);
+            }
+            return BadRequest();
+        }
     }
 }
