@@ -1,6 +1,4 @@
 ﻿@page "/categories"
-
-
 <h3>Categorías</h3>
 
 <div class="mb-3">
@@ -9,11 +7,14 @@
 
 <GenericList MyList="Categories">
     <Body>
+        <Pagination CurrentPage="currentPage"
+                    TotalPages="totalPages"
+                    SelectedPage="SelectedPageAsync" />
         <table class="table table-striped">
             <thead>
                 <tr>
                     <th>Categoría</th>
-                    <th>    </th>
+                    <th style="width:180px">    </th>
                 </tr>
             </thead>
             <tbody>
